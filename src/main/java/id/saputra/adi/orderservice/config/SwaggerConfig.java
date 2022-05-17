@@ -16,8 +16,8 @@ import java.util.Collections;
 @EnableSwagger2
 public class SwaggerConfig {
 
-    private static final String API_TITLE = "REST API Docs for Customer Services";
-    private static final String API_DESC = "REST API for handling Customer Services";
+    private static final String API_TITLE = "REST API Docs for Order Services";
+    private static final String API_DESC = "REST API for handling Order Services";
     private static final String API_VERSION = "v1";
     private static final String API_CONTACT_NAME = "Adi Saputra";
     private static final String API_CONTACT_EMAIL = "adisapu10022@gmail.com";

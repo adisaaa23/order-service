@@ -1,7 +1,7 @@
-# Customer Data Service
+# Order Service
 
 ## Swagger Data Contract
-- http://localhost:8001/swagger-ui.html
+- http://localhost:8004/swagger-ui.html
 
 ## Requirements
 
@@ -17,5 +17,4 @@ There are several ways to run a Spring Boot application on your local machine. O
 Alternatively you can use the [Spring Boot Maven plugin](https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html) like so:
 
 ## Technology
-### Spring Boot Data JPA
-### Spring Boot Data Redis
+### Spring Boot Kafka
