@@ -3,6 +3,30 @@
 ## Swagger Data Contract
 - http://localhost:8004/swagger-ui.html
 
+## Step by Step to Use
+- Start service [customer-data-service](https://github.com/adisaaa23/customer-data-service.git)
+- Start service [products-data-service](https://github.com/adisaaa23/products-data-service.git)
+- Start service [order-service](https://github.com/adisaaa23/order-service.git)
+- Start service [transactions-data-service](https://github.com/adisaaa23/transactions-data-service.git)
+
+- Get All Customers on customer-data-service
+- Get All Products on products-data-service
+
+### Step to Order
+- Inquiry based on eligible product for customer with : 
+Endpoint : "/orders/inquiry"
+Request : {
+  "amount": "100000",
+  "productCode": "AA3",
+  "username": "user1"
+}
+- Execute to Order with :
+Endpoint : "/orders/execute"
+Request : {
+  "referenceNumber": "122312312312312",
+  "username": "user1"
+}
+
 ## Requirements
 
 For building and running the application you need:
