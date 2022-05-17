@@ -1,11 +1,27 @@
 package id.saputra.adi.orderservice.services;
 
+import id.saputra.adi.orderservice.domain.dto.TransactionDto;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.kafka.KafkaException;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.text.ParseException;
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
+
+import static org.mockito.Mockito.*;
+import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -13,103 +29,33 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DirtiesContext
 @EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9098", "port=9098"})
 public class KafkaProducerServiceTest {
-   /* @Autowired
+
+    @Autowired
     private KafkaProducerService kafkaProducerService;
 
-    private final CountDownLatch latch = new CountDownLatch(1);
+    @MockBean
+    private KafkaTemplate<String, String> kafkaTemplate;
 
-    private String payload;
-
-    @Test
-    public void publishAuditTrailMsgNullObjectTests() throws InterruptedException {
-        kafkaProducerService.publishAuditTrailMsg(null);
-        var await = getLatch().await(10000, TimeUnit.MILLISECONDS);
-        log.info("await: {}", await);
-        assertEquals(1, getLatch().getCount());
-    }
+    @Value("${kafka.topic.transaction}")
+    private String topicTransaction;
 
     @Test
-    public void publishMessagingAuditTrailNullObjectTests() throws InterruptedException {
-        kafkaProducerService.publishMessagingAuditTrail(null);
-        var await = getLatch().await(10000, TimeUnit.MILLISECONDS);
-        log.info("await: {}", await);
-        assertEquals(1, getLatch().getCount());
-    }
-
-    @Test
-    public void publishAuditTrailMsgTests() throws InterruptedException, JsonProcessingException {
-        var msg = CustomerActivityDTO.builder()
-                .id("1")
-                .customerId(1)
-                .activityName(Constant.ActivityName.ACTIVITY_INQUIRY_FT_SWIFT)
-                .moduleName("TRANSFER")
-                .channelGroup("")
-                .octomobileRefNo("RF998349389434")
-                .sourceError("")
-                .errorCode("0")
-                .ipAddress("127.0.0.1")
-                .deviceUniqueId("123456789")
-                .deviceInfo("iOS")
-                .channelCode("001")
-                .status(0)
-                .errorDesc("SUCCESS")
+    public void publishMessageExpectSuccess() throws JsonProcessingException {
+        TransactionDto transactionDto = TransactionDto.builder()
+                .referenceNo("XXXX")
                 .build();
-
-        var publishedMsg = new ObjectMapper().writeValueAsString(msg);
-
-        kafkaProducerService.publishAuditTrailMsg(msg);
-        receiveCustomerActivity(msg);
-        var await = getLatch().await(10000, TimeUnit.MILLISECONDS);
-        log.info("await: {}", await);
-        assertEquals(0, getLatch().getCount());
-        assertThat(getPayload()).contains(publishedMsg);
+        kafkaProducerService.publishMessage(transactionDto);
+        verify(kafkaTemplate, times(1)).send(topicTransaction, new ObjectMapper().writeValueAsString(transactionDto));
     }
 
     @Test
-    public void publishMessagingAuditTrailTests() throws InterruptedException, JsonProcessingException {
-        var msg = MessageAuditTrailDTO.builder()
-                .rqId("123")
-                .customerAuditTrailId("squad1ios")
-                .errorCode("0")
-                .errorDescription("SUCCESS")
-                .response("{}")
-                .requestTime(new Date())
-                .responseTime(new Date())
-                .request("{}").build();
-
-        var publishedMsg = new ObjectMapper().writeValueAsString(msg);
-
-        kafkaProducerService.publishMessagingAuditTrail(msg);
-        receiveMessagingAuditTrail(msg);
-        var await = getLatch().await(10000, TimeUnit.MILLISECONDS);
-        log.info("await: {}", await);
-        assertEquals(0, getLatch().getCount());
-        assertThat(getPayload()).contains(publishedMsg);
+    public void publishMessageExpectException() throws JsonProcessingException {
+        TransactionDto transactionDto = TransactionDto.builder()
+                .referenceNo("XXXX")
+                .build();
+        when(kafkaTemplate.send(any(), any())).thenThrow(new KafkaException(""));
+        kafkaProducerService.publishMessage(transactionDto);
+        verify(kafkaTemplate, times(1)).send(topicTransaction, new ObjectMapper().writeValueAsString(transactionDto));
     }
 
-    @KafkaListener(topics = "SAVE_AUDIT_TRAIL")
-    public void receiveCustomerActivity(CustomerActivityDTO consumerRecord) throws JsonProcessingException {
-        log.info("received payload='{}'", consumerRecord.toString());
-        setPayload(new ObjectMapper().writeValueAsString(consumerRecord));
-        latch.countDown();
-    }
-
-    @KafkaListener(topics = "SAVE_MESSAGE_AUDIT_TRAIL")
-    public void receiveMessagingAuditTrail(MessageAuditTrailDTO consumerRecord) throws JsonProcessingException {
-        log.info("received payload='{}'", consumerRecord.toString());
-        setPayload(new ObjectMapper().writeValueAsString(consumerRecord));
-        latch.countDown();
-    }
-
-    private CountDownLatch getLatch() {
-        return latch;
-    }
-
-    private String getPayload() {
-        return payload;
-    }
-
-    private void setPayload(String payload) {
-        this.payload = payload;
-    }*/
 }

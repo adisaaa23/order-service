@@ -17,7 +17,7 @@ public class ProductService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public ProductDto detailCustomer(String productCode){
+    public ProductDto detailProduct(String productCode){
         log.info("Starting get detail product");
         ResponseEntity<ProductDto> responseEntity = restTemplate.getForEntity(urlDataPrdDetail, ProductDto.class, productCode);
         if (responseEntity.hasBody()){

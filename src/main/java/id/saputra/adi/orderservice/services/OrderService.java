@@ -1,6 +1,5 @@
 package id.saputra.adi.orderservice.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import id.saputra.adi.orderservice.domain.dto.*;
 import id.saputra.adi.orderservice.exception.ApplicationException;
@@ -9,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 @Slf4j
@@ -36,9 +35,9 @@ public class OrderService implements IOrder {
     }
 
     @Override
-    public Object inquiry(OrderDtoRq orderDtoRq) throws JsonProcessingException {
+    public OrderDtoRs inquiry(OrderDtoRq orderDtoRq) {
         log.info("Starting to inquiry order ....");
-        String referenceNumber = LocalDateTime.now().toString();
+        String referenceNumber = String.valueOf(new Date().getTime());
         try {
             /* Call Data Customer Detail */
             CustomerDto customerDto = customerService.detailCustomer(orderDtoRq.getUsername());
@@ -46,7 +45,7 @@ public class OrderService implements IOrder {
                 return new OrderDtoRs("101", "Customer invalid!", referenceNumber);
             }
             /* Call Data Product Detail */
-            ProductDto productDto = productService.detailCustomer(orderDtoRq.getProductCode());
+            ProductDto productDto = productService.detailProduct(orderDtoRq.getProductCode());
             if (Objects.isNull(productDto)) {
                 return new OrderDtoRs("102", "Product invalid!", referenceNumber);
             }
@@ -76,7 +75,7 @@ public class OrderService implements IOrder {
     }
 
     @Override
-    public Object order(OrderDtoRq orderDtoRq) {
+    public OrderDtoRs order(OrderDtoRq orderDtoRq) {
         log.info("Starting to processing order ....");
         TransactionDto transactionDto = new TransactionDto();
         try {

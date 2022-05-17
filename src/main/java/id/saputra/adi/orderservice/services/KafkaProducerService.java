@@ -20,7 +20,7 @@ public class KafkaProducerService {
         try {
             String publishMessage = new ObjectMapper().writeValueAsString(message);
             log.debug("Send Data to Topic {} : {}", topicTransaction, publishMessage);
-            new Thread(() -> kafkaTemplate.send(topicTransaction, publishMessage)).start();
+            kafkaTemplate.send(topicTransaction, publishMessage);
         } catch (Exception e) {
             log.error("Error when publish to topic {} : {}", topicTransaction, e.getMessage());
             log.trace("Error when publish to topic {} :", topicTransaction, e);
