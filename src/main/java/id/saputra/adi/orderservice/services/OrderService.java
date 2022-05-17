@@ -79,7 +79,8 @@ public class OrderService implements IOrder {
         log.info("Starting to processing order ....");
         TransactionDto transactionDto = new TransactionDto();
         try {
-            String cacheTransaction = (String) cacheManagerService.getCache("transactions", orderDtoRq.getUsername() + orderDtoRq.getReferenceNumber());
+            String keyCache = orderDtoRq.getUsername() + orderDtoRq.getReferenceNumber();
+            String cacheTransaction = (String) cacheManagerService.getCache("transactions", keyCache);
 
             if (Objects.isNull(cacheTransaction)){
                 return new OrderDtoRs("0101", "Transaction Invalid!", orderDtoRq.getReferenceNumber());
@@ -88,6 +89,7 @@ public class OrderService implements IOrder {
             transactionDto.setTransactionStatus("SUCCESS");
             transactionDto.setTransactionDesc("Order Successfully");
             log.info("Success inquiry order ...");
+            cacheManagerService.removeCache("transactions", keyCache);
             return new OrderDtoRs("000", "Processing Order Successfully", orderDtoRq.getReferenceNumber());
         } catch (Exception exception) {
             log.error("Happened error when processing order : ", exception);

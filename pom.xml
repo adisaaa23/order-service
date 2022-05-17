@@ -20,7 +20,6 @@
 		<modelmapper.version>3.1.0</modelmapper.version>
 		<jdis.mock.version>1.0.2</jdis.mock.version>
 		<junit.version>4.12</junit.version>
-		<kafka.embedded.version>1.17.1</kafka.embedded.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -75,12 +74,6 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- Kafka -->
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>kafka</artifactId>
-			<version>${kafka.embedded.version}</version>
-			<scope>compile</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
