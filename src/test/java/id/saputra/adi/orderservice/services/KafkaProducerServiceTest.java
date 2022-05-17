@@ -16,12 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.text.ParseException;
-import java.time.Duration;
-import java.util.concurrent.TimeoutException;
-
 import static org.mockito.Mockito.*;
-import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 @Slf4j
 @RunWith(SpringRunner.class)
